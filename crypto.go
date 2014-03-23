@@ -15,10 +15,6 @@ import (
 	"fmt"
 	"hash"
 	"io"
-	// "log"
-	// "net/http"
-	// "sync"
-	// "time"
 )
 
 var (
@@ -54,7 +50,7 @@ func (c *CryptoHandler) Encrypt(encMap map[string]interface{}) (string, []byte) 
 
 	fmt.Println("------------------------>>>>>>>>>>>>>>>>>>")
 	fmt.Println("encKey:%s   hmacKey:%s", c.encKey, c.hmacKey)
-	encoded, gobHash, err := encodeCookie(encMap, c.encKey, c.hmacKey)
+	encoded, gobHash, err := encodeMap(encMap, c.encKey, c.hmacKey)
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -63,7 +59,7 @@ func (c *CryptoHandler) Encrypt(encMap map[string]interface{}) (string, []byte) 
 }
 
 func (c *CryptoHandler) Decrypt(decStr string) (map[string]interface{}, []byte) {
-	session, gobHash, err := decodeCookie(decStr, c.encKey, c.hmacKey)
+	session, gobHash, err := decodeMap(decStr, c.encKey, c.hmacKey)
 	if err != nil {
 		return map[string]interface{}{}, nil
 	}
@@ -133,7 +129,7 @@ func encode(block cipher.Block, hmac hash.Hash, data []byte) ([]byte, error) {
  *cookie加密
  *
  **/
-func encodeCookie(content interface{}, encKey, hmacKey []byte) (string, []byte, error) {
+func encodeMap(content interface{}, encKey, hmacKey []byte) (string, []byte, error) {
 	encodedGob, err := encodeGob(content)
 	if err != nil {
 		return "", nil, err
@@ -193,7 +189,7 @@ func decode(block cipher.Block, hmac hash.Hash, ciphertext []byte) ([]byte, erro
  *cookie 解密
  *
  **/
-func decodeCookie(encoded string, encKey, hmacKey []byte) (map[string]interface{}, []byte, error) {
+func decodeMap(encoded string, encKey, hmacKey []byte) (map[string]interface{}, []byte, error) {
 	sessionBytes, err := base64.StdEncoding.DecodeString(encoded)
 	if err != nil {
 		return nil, nil, err
