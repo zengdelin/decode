@@ -56,9 +56,7 @@ func (c *CryptoHandler) Encrypt(encMap map[string]interface{}) (string, []byte) 
 	fmt.Println("encKey:%s   hmacKey:%s", c.encKey, c.hmacKey)
 	encoded, gobHash, err := encodeCookie(encMap, c.encKey, c.hmacKey)
 	if err != nil {
-		// log.Printf("createCookie: %s\n", err)
-		fmt.Println("createCookie: %s\n", err)
-		// goto write
+		fmt.Println(err)
 	}
 	// return "nil", nil
 	return encoded, gobHash
